@@ -1,0 +1,61 @@
+1. Untar the tarballs created after the course was over
+     android_coursework.tgz
+     kernel_coursework.tgz
+
+     Grab uboot from the Exercises directory in the BOOTCAMP directory
+     tar xvf ~/Exercises/HandsOn/Exercise0/uboot.tgz
+
+2. Install "Java SE Development Kit 6 Update 45" file for "Linux x64"
+     File: jdk-6u45-linux-x64.bin   (can be found on my oublier
+rgreenburg directory)
+
+     Follow instructions in the BootcampSetupGuide.pdf in
+BOOTCAMP/Embedded_Andriod_Docs
+         sudo cp jdk-6u45-linux-x64.bin /usr/lib/jvm/
+         cd /usr/lib/jvm/
+         sudo ./jdk-6u45-linux-x64.bin
+         sudo rm jdk-6u45-linux-x64.bin
+         # sudo ln -s -b /usr/lib/jvm/jdk1.6.0_45/jre/bin/java
+/etc/alternatives/java
+
+3. Modified .bashrc file (done in setenv.sh)
+     PATH="path to your build
+directory"/android/prebuilts/gcc/linux-x86/arm/arm-eabi-4.6/bin:$PATH
+     JAVA_HOME=/usr/lib/jvm/jdk1.6.0_45
+     PATH=$PATH:$JAVA_HOME/bin
+
+4. Install some missing packages
+     sudo apt update
+     sudo apt-get install device-tree-compiler
+     sudo apt-get install u-boot-tools
+     sudo apt-get install gperf
+     sudo apt-get install libswitch-perl
+     sudo apt-get install adb fastboot or sudo apt-get install android-tools-fastboot android-tools-adb
+
+5 Then just followed the build instructions from the Exercises
+
+Building uboot
+     cd ~/uboot/
+     make ARCH=arm CROSS_COMPILE=arm-eabi- distclean
+     make ARCH=arm CROSS_COMPILE=arm-eabi- bootcamp_defconfig
+     time make ARCH=arm CROSS_COMPILE=arm-eabi- -j16
+
+Building the kernel
+     cd ~/kernel/
+     make ARCH=arm CROSS_COMPILE=arm-eabi- distclean
+     make ARCH=arm CROSS_COMPILE=arm-eabi- bootcamp_android_defconfig
+     time make ARCH=arm CROSS_COMPILE=arm-eabi- uImage -j16
+
+Building Tiny Android
+     cd ~/android/
+     source build/envsetup.sh
+     chooseproduct starter_bootcamp
+     make installclean
+     time make BUILD_TINY_ANDROID=true -j16
+
+Building Full Andriod
+     cd ~/android/
+     source build/envsetup.sh
+     chooseproduct full_barrometer
+     make installclean
+     time make -j16
