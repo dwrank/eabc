@@ -2638,6 +2638,23 @@ static void gpio_led_init(int evm_id, int profile)
 		pr_err("failed to register gpio led device\n");
 }
 
+static struct platform_device barrometer_uart2 = {
+	.name	= "barrometer_uart2",
+	.id	= -1,
+};
+
+static void barrometer_uart2_init(int evm_id, int profile)
+{
+	int error = 0;
+
+	printk("\n!!!!! barrometer_uart2_init\n\n");
+
+	error = platform_device_register(&barrometer_uart2);
+	if (error != 0)
+		printk("failed to register barrometer_uart2 \
+			device: error %d\n", error);
+}
+
 /* setup spi0 */
 static void spi0_init(int evm_id, int profile)
 {
@@ -2755,6 +2772,7 @@ static struct evm_dev_cfg evm_sk_dev_cfg[] = {
 	{uart1_wl12xx_init, DEV_ON_BASEBOARD, PROFILE_ALL},
 	{wl12xx_init,       DEV_ON_BASEBOARD, PROFILE_ALL},
 	{gpio_ddr_vtt_enb_init,	DEV_ON_BASEBOARD, PROFILE_ALL},
+	{barrometer_uart2_init, DEV_ON_BASEBOARD, PROFILE_ALL},
 	{NULL, 0, 0},
 };
 
