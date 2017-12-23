@@ -2866,6 +2866,11 @@ static void setup_beaglebone(void)
 /* EVM - Starter Kit */
 static void setup_starterkit(void)
 {
+	int i = 0;
+	int ret = 0;
+	int pin = 4;
+	unsigned gpio = 0;
+
 	pr_info("The board is a AM335x Starter Kit.\n");
 
 	/* Starter Kit has Micro-SD slot which doesn't have Write Protect pin */
@@ -2877,6 +2882,30 @@ static void setup_starterkit(void)
 	/* Atheros Tx Clk delay Phy fixup */
 	phy_register_fixup_for_uid(AM335X_EVM_PHY_ID, AM335X_EVM_PHY_MASK,
 				   am33xx_evm_tx_clk_dly_phy_fixup);
+
+	for (i = 0; i < 4; i++)
+	{
+		printk(KERN_EMERG "Blink LED %d", i+1);
+		gpio = GPIO_TO_PIN(1, pin+i);
+		
+		ret = gpio_request(gpio, "AM335X_GPIO_LED");
+		if (ret != 0)
+		{
+			printk(KERN_EMERG "gpio_request failed with error: %d", ret);
+		}
+
+		ret = gpio_direction_output(gpio, 1);
+		if (ret != 0)
+		{
+			printk(KERN_EMERG "gpio_direction_output failed with error: %d", ret);
+		}
+		
+		mdelay(100);
+
+		gpio_set_value(gpio, 0);
+
+		mdelay(100);
+	}
 }
 
 static void am335x_setup_daughter_board(struct memory_accessor *m, void *c)
